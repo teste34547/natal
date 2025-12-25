@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mensagem de Epaminondas</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Mountains+of+Christmas:wght@700&family=Quicksand:wght@500;700&display=swap');
+
+        body {
+            margin: 0;
+            padding: 0;
+            /* Fundo gradiente de noite de natal */
+            background: radial-gradient(circle at center, #1a2a6c, #b21f1f, #fdbb2d); 
+            background: linear-gradient(to bottom, #020024, #090979, #00d4ff);
+            background: linear-gradient(to bottom, #0f0c29, #302b63, #24243e);
+            color: white;
+            font-family: 'Quicksand', sans-serif;
+            overflow-x: hidden;
+            text-align: center;
+        }
+
+        /* --- CORTINAS --- */
+        .curtain-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 100;
+            pointer-events: none;
+        }
+
+        .curtain {
+            position: fixed;
+            top: 0;
+            height: 100%;
+            width: 50%;
+            /* Cortina vermelha com textura */
+            background: repeating-linear-gradient(90deg, #8b0000, #8b0000 20px, #600000 20px, #600000 40px);
+            transition: transform 2.5s cubic-bezier(0.77, 0, 0.175, 1);
+            z-index: 101;
+            box-shadow: 0 0 30px rgba(0,0,0,0.9);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .curtain-left { left: 0; transform-origin: left; border-right: 2px solid #4a0000; }
+        .curtain-right { right: 0; transform-origin: right; border-left: 2px solid #4a0000; }
+
+        .open .curtain-left { transform: translateX(-100%); }
+        .open .curtain-right { transform: translateX(100%); }
+
+        /* Ícone na cortina */
+        .curtain-icon {
+            font-size: 4rem;
+            filter: drop-shadow(0 0 10px gold);
+        }
+
+        /* --- BOTÃO --- */
+        .rope-btn {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 102;
+            background: linear-gradient(45deg, #FFD700, #FFA500);
+            border: 4px solid #fff;
+            padding: 15px 35px;
+            font-size: 20px;
+            font-weight: bold;
+            color: #8b0000;
+            border-radius: 50px;
+            cursor: pointer;
+            box-shadow: 0 0 25px #FFD700, inset 0 0 10px white;
+            animation: pulse 1.5s infinite;
+            text-transform: uppercase;
+            font-family: 'Mountains of Christmas', cursive;
+            letter-spacing: 1px;
+            transition: transform 0.2s;
+        }
+        .rope-btn:active { transform: translate(-50%, -50%) scale(0.95); }
+
+        /* --- CONTEÚDO PRINCIPAL --- */
+        .main-content {
+            padding: 20px;
+            opacity: 0;
+            transition: opacity 3s ease-in;
+            max-width: 600px;
+            margin: 0 auto;
+            margin-top: 20px;
+            padding-bottom: 50px;
+        }
+        .visible { opacity: 1; }
+
+        /* Título Principal */
+        h1.main-title {
+            font-family: 'Mountains of Christmas', cursive;
+            font-size: 3.5rem;
+            color: #fff;
+            margin: 10px 0;
+            text-shadow: 0 0 10px #ff0000, 0 0 20px #ff0000, 0 0 40px #ff00de;
+            animation: glow 2s infinite alternate;
+        }
+
+        /* GIF Container */
+        .gif-container {
+            margin: 15px auto;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 0 20px rgba(255, 255, 255, 0.2);
+            border: 3px solid rgba(255, 255, 255, 0.3);
+            width: 85%;
+            max-width: 400px;
+            background: rgba(0,0,0,0.3);
+        }
+        .gif-container img {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+
+        /* --- TIMER --- */
+        #timer {
+            font-size: 1rem;
+            font-weight: bold;
+            background: rgba(0, 0, 0, 0.6);
+            padding: 15px;
+            border-radius: 15px;
+            border: 1px solid #FFD700;
+            margin: 10px auto;
+            width: 80%;
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 10px;
+            box-shadow: 0 0 15px rgba(255, 215, 0, 0.3);
+        }
+        .time-block {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-width: 60px;
+        }
+        .time-val { color: #00ff00; font-size: 1.4rem; text-shadow: 0 0 5px lime; }
+        .time-label { color: #ff4d4d; font-size: 0.8rem; text-transform: uppercase; }
+
+        /* --- MENSAGEM --- */
+        .glass-card {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(5px);
+            -webkit-backdrop-filter: blur(5px);
+            border-radius: 20px;
+            padding: 20px;
+            margin: 20px 10px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .wish-text p {
+            font-size: 1.3rem;
+            margin: 15px 0;
+            font-weight: 700;
+            text-shadow: 2px 2px 0px rgba(0,0,0,0.8);
+            line-height: 1.4;
+        }
+
+        .text-orange { color: #FFA500; } /* Laranja */
+        .text-lime { color: #76ff03; }   /* Verde Lima Brilhante */
+        .text-blue { color: #00e5ff; }   /* Azul Cyan */
+        .text-violet { color: #ea80fc; } /* Violeta */
+        .text-red { color: #ff1744; font-size: 1.6rem !important; margin-top: 25px !important; letter-spacing: 2px;}
+
+        /* Assinatura */
+        .signature {
+            font-family: 'Mountains of Christmas', cursive;
+            font-size: 2.5rem;
+            color: #ff0000;
+            font-weight: bold;
+            margin-top: 10px;
+            text-shadow: -1px -1px 0 #fff, 1px -1px 0 #fff, -1px 1px 0 #fff, 1px 1px 0 #fff, 0 0 15px red;
+            animation: bounce 2s infinite;
+        }
+
+        /* --- ANIMAÇÕES --- */
+        @keyframes pulse { 0% { transform: translate(-50%, -50%) scale(1); } 50% { transform: translate(-50%, -50%) scale(1.05); } 100% { transform: translate(-50%, -50%) scale(1); } }
+        @keyframes glow { from { text-shadow: 0 0 10px #fff, 0 0 20px #ff0000; } to { text-shadow: 0 0 20px #fff, 0 0 30px #ff0000; } }
+        @keyframes bounce { 0%, 20%, 50%, 80%, 100% {transform: translateY(0);} 40% {transform: translateY(-10px);} 60% {transform: translateY(-5px);} }
+
+        /* Neve */
+        .snowflake { color: #fff; font-size: 1.2em; position: fixed; top: -10%; z-index: 9999; animation: snowflakes-fall 10s linear infinite, snowflakes-shake 3s ease-in-out infinite; }
+        @keyframes snowflakes-fall { 0% { top: -10%; } 100% { top: 100%; } }
+        @keyframes snowflakes-shake { 0% { transform: translateX(0px); } 50% { transform: translateX(80px); } 100% { transform: translateX(0px); } }
+        
+        /* Gerando aleatoriedade nos flocos */
+        .snowflake:nth-of-type(1) { left: 1%; animation-delay: 0s, 0s; }
+        .snowflake:nth-of-type(2) { left: 10%; animation-delay: 1s, 1s; }
+        .snowflake:nth-of-type(3) { left: 20%; animation-delay: 6s, .5s; }
+        .snowflake:nth-of-type(4) { left: 30%; animation-delay: 4s, 2s; }
+        .snowflake:nth-of-type(5) { left: 40%; animation-delay: 2s, 2s; }
+        .snowflake:nth-of-type(6) { left: 50%; animation-delay: 8s, 3s; }
+        .snowflake:nth-of-type(7) { left: 60%; animation-delay: 6s, 2s; }
+        .snowflake:nth-of-type(8) { left: 70%; animation-delay: 2.5s, 1s; }
+        .snowflake:nth-of-type(9) { left: 80%; animation-delay: 1s, 0s; }
+        .snowflake:nth-of-type(10) { left: 90%; animation-delay: 3s, 1.5s; }
+
+    </style>
+</head>
+<body>
+
+    <div class="curtain-container" id="curtains">
+        <div class="curtain curtain-left"><span class="curtain-icon"></span></div>
+        <div class="curtain curtain-right"><span class="curtain-icon"></span></div>
+    </div>
+
+    <button class="rope-btn" onclick="openGift()">
+        🎁 Toca Aqui 🎁
+    </button>
+
+    <div class="snowflakes" aria-hidden="true">
+        <div class="snowflake">❅</div><div class="snowflake">❄</div>
+        <div class="snowflake">❆</div><div class="snowflake">❅</div>
+        <div class="snowflake">❄</div><div class="snowflake">❆</div>
+        <div class="snowflake">❄</div><div class="snowflake">❅</div>
+        <div class="snowflake">❆</div><div class="snowflake">❄</div>
+    </div>
+
+    <div class="main-content" id="content">
+        
+        <h1 class="main-title">EPAMINONDAS</h1>
+
+        <div id="timer">Calculando...</div>
+
+        <div class="gif-container">
+            <img src="Feliz-Natal_1146.gif" alt="Cute Christmas GIF">
+        </div>
+
+        <div class="glass-card">
+            <div class="wish-text">
+                <p class="text-orange">
+                    🎄Enviando orações e calorosas<br>saudações de Natal para si.🎅
+                </p>
+                <p class="text-lime">
+                    🎁Que receba as bênçãos mais especiais<br>de Deus durante esta
+                </p>
+                <p class="text-blue">
+                    época natalícia.🔮
+                </p>
+                <p class="text-red">
+                    ! 🎄Feliz Natal🎄 !
+                </p>
+            </div>
+        </div>
+
+        <div class="signature">
+            🎅EPAMINONDAS🎅
+        </div>
+
+    </div>
+
+    <audio id="bgMusic" loop>
+        <source src="https://cdn.pixabay.com/download/audio/2022/01/05/audio_24a2e5491f.mp3?filename=christmas-magic-11263.mp3" type="audio/mp3">
+    </audio>
+
+    <script>
+        function openGift() {
+            document.getElementById('curtains').classList.add('open');
+            document.querySelector('.rope-btn').style.display = 'none';
+            document.getElementById('content').classList.add('visible');
+            
+            var music = document.getElementById('bgMusic');
+            music.volume = 0.4; // Volume agradável
+            music.play().catch(e => console.log("Interação necessária para tocar áudio"));
+        }
+
+        // Configuração: Natal de 2025
+        var countDownDate = new Date("Dec 25, 2025 00:00:00").getTime();
+
+        var x = setInterval(function() {
+            var now = new Date().getTime();
+            var distance = countDownDate - now;
+
+            var days = Math.floor(distance / (1000 * 60 * 60 * 24));
+            var hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            var minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+            var seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+            // Layout do Timer Bonitinho
+            document.getElementById("timer").innerHTML = 
+                "<div class='time-block'><span class='time-val'>" + days + "</span><span class='time-label'>Dias</span></div>" + 
+                "<div class='time-block'><span class='time-val'>" + hours + "</span><span class='time-label'>Horas</span></div>" +
+                "<div class='time-block'><span class='time-val'>" + minutes + "</span><span class='time-label'>Min</span></div>" +
+                "<div class='time-block'><span class='time-val'>" + seconds + "</span><span class='time-label'>Seg</span></div>";
+
+            if (distance < 0) {
+                clearInterval(x);
+                document.getElementById("timer").innerHTML = "<span style='color:gold; font-size:1.5rem'>🎄 JÁ É NATAL! 🎄</span>";
+            }
+        }, 1000);
+    </script>
+</body>
+</html>
